@@ -10,8 +10,6 @@ public partial class AlunoUc
 
     public int? IdUc { get; set; }
 
-    public int? IdCurso { get; set; }
-
     public int? IdAluno { get; set; }
 
     [Display(Name = "Nome do Aluno")]

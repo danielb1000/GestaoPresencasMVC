@@ -60,7 +60,6 @@ public partial class TentativaDb4Context : DbContext
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.IdAluno).HasColumnName("id_aluno");
-            entity.Property(e => e.IdCurso).HasColumnName("id_curso");
             entity.Property(e => e.IdUc).HasColumnName("id_uc");
 
             entity.HasOne(d => d.IdAlunoNavigation).WithMany(p => p.AlunoUcs)
