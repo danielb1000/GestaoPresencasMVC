@@ -1,0 +1,46 @@
+﻿@model GestaoPresencasMVC.Models.Aula
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Aula</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="IdUc" class="control-label"></label>
+                <select asp-for="IdUc" class ="form-control" asp-items="ViewBag.IdUc"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdAno" class="control-label"></label>
+                <select asp-for="IdAno" class ="form-control" asp-items="ViewBag.IdAno"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Data" class="control-label"></label>
+                <input asp-for="Data" class="form-control" />
+                <span asp-validation-for="Data" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Sala" class="control-label"></label>
+                <input asp-for="Sala" class="form-control" />
+                <span asp-validation-for="Sala" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
