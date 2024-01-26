@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace GestaoPresencasMVC.Models;
 
@@ -17,7 +18,11 @@ public partial class Uc
 
     public virtual ICollection<Aula> Aulas { get; set; } = new List<Aula>();
 
+    [Display(Name = "Curso")]
+    [DataType(DataType.Text)]
     public virtual Curso? IdCursoNavigation { get; set; }
 
+    [Display(Name = "Nome do Docente")]
+    [DataType(DataType.Text)]
     public virtual Docente? IdDocenteNavigation { get; set; }
 }
