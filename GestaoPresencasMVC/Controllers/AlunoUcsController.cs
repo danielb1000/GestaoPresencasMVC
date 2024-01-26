@@ -48,8 +48,8 @@ namespace GestaoPresencasMVC.Controllers
         // GET: AlunoUcs/Create
         public IActionResult Create()
         {
-            ViewData["IdAluno"] = new SelectList(_context.Alunos, "Id", "Id");
-            ViewData["IdUc"] = new SelectList(_context.Ucs, "Id", "Id");
+            ViewData["IdAluno"] = new SelectList(_context.Alunos, "Id", "Nome");
+            ViewData["IdUc"] = new SelectList(_context.Ucs, "Id", "Nome");
             return View();
         }
 
@@ -84,8 +84,8 @@ namespace GestaoPresencasMVC.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdAluno"] = new SelectList(_context.Alunos, "Id", "Id", alunoUc.IdAluno);
-            ViewData["IdUc"] = new SelectList(_context.Ucs, "Id", "Id", alunoUc.IdUc);
+            ViewData["IdAluno"] = new SelectList(_context.Alunos, "Id", "Nome", alunoUc.IdAluno);
+            ViewData["IdUc"] = new SelectList(_context.Ucs, "Id", "Nome", alunoUc.IdUc);
             return View(alunoUc);
         }
 
@@ -121,8 +121,8 @@ namespace GestaoPresencasMVC.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdAluno"] = new SelectList(_context.Alunos, "Id", "Id", alunoUc.IdAluno);
-            ViewData["IdUc"] = new SelectList(_context.Ucs, "Id", "Id", alunoUc.IdUc);
+            ViewData["IdAluno"] = new SelectList(_context.Alunos, "Id", "Nome", alunoUc.IdAluno);
+            ViewData["IdUc"] = new SelectList(_context.Ucs, "Id", "Nome", alunoUc.IdUc);
             return View(alunoUc);
         }
 

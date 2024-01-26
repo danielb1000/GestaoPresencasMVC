@@ -47,7 +47,7 @@ namespace GestaoPresencasMVC.Controllers
         // GET: Cursoes/Create
         public IActionResult Create()
         {
-            ViewData["IdEscola"] = new SelectList(_context.Escolas, "Id", "Id");
+            ViewData["IdEscola"] = new SelectList(_context.Escolas, "Id", "Nome");
             return View();
         }
 
@@ -81,7 +81,7 @@ namespace GestaoPresencasMVC.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdEscola"] = new SelectList(_context.Escolas, "Id", "Id", curso.IdEscola);
+            ViewData["IdEscola"] = new SelectList(_context.Escolas, "Id", "Nome", curso.IdEscola);
             return View(curso);
         }
 

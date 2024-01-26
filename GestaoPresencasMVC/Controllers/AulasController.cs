@@ -48,8 +48,8 @@ namespace GestaoPresencasMVC.Controllers
         // GET: Aulas/Create
         public IActionResult Create()
         {
-            ViewData["IdAno"] = new SelectList(_context.Anos, "Id", "Id");
-            ViewData["IdUc"] = new SelectList(_context.Ucs, "Id", "Id");
+            ViewData["IdAno"] = new SelectList(_context.Anos, "Id", "Numero");
+            ViewData["IdUc"] = new SelectList(_context.Ucs, "Id", "Nome");
             return View();
         }
 
@@ -84,8 +84,8 @@ namespace GestaoPresencasMVC.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdAno"] = new SelectList(_context.Anos, "Id", "Id", aula.IdAno);
-            ViewData["IdUc"] = new SelectList(_context.Ucs, "Id", "Id", aula.IdUc);
+            ViewData["IdAno"] = new SelectList(_context.Anos, "Id", "Numero", aula.IdAno);
+            ViewData["IdUc"] = new SelectList(_context.Ucs, "Id", "Nome", aula.IdUc);
             return View(aula);
         }
 
