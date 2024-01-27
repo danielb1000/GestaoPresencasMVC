@@ -1,12 +1,20 @@
 using GestaoPresencasMVC.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using GestaoPresencasMVC.Data;
+using GestaoPresencasMVC.Areas.Identity.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
+
 
 builder.Services.AddDbContext<TentativaDb4Context>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("constring")));
+builder.Services.AddDbContext<gpContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("gpContextConnection")));
+
+builder.Services.AddDefaultIdentity<gpUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<gpContext>();
 
 var app = builder.Build();
 
@@ -28,5 +36,6 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapRazorPages();
 
 app.Run();
