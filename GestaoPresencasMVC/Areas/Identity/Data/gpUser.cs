@@ -9,5 +9,7 @@ namespace GestaoPresencasMVC.Areas.Identity.Data;
 // Add profile data for application users by adding properties to the gpUser class
 public class gpUser : IdentityUser
 {
+    public int? DocenteId { get; set; }
+    public int? AlunoId{ get; set; }
 }
 

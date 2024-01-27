@@ -16,6 +16,19 @@ builder.Services.AddDbContext<gpContext>(options => options.UseSqlServer(builder
 
 builder.Services.AddDefaultIdentity<gpUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<gpContext>();
 
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    // Disable other password requirements
+    options.Password.RequireDigit = false;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+
+    // Set the minimum length if needed
+    options.Password.RequiredLength = 1; // Set your desired minimum length
+});
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
