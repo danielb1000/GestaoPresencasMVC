@@ -6,14 +6,17 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GestaoPresencasMVC.Models;
+using GestaoPresencasMVC.Areas.Identity.Data;
+using Microsoft.AspNetCore.Identity;
 
 namespace GestaoPresencasMVC.Controllers
 {
-    public class PresencasController : Controller
+    public class PresencasController : BaseController
     {
         private readonly TentativaDb4Context _context;
 
-        public PresencasController(TentativaDb4Context context)
+        public PresencasController(TentativaDb4Context context, UserManager<gpUser> userManager)
+             : base(userManager)
         {
             _context = context;
         }
