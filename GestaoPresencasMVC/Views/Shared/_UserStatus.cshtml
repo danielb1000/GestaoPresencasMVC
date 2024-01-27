@@ -1,0 +1,48 @@
+﻿@functions {
+    private string GetProfileUrl()
+    {
+        if (ViewBag.DocenteId != null)
+        {
+            // Replace "Details" and "1" with the actual details page and ID for Docente
+            return Url.Action("Details", "Docentes", new { id = ViewBag.DocenteId });
+        }
+        else if (ViewBag.AlunoId != null)
+        {
+            // Replace "Details" and "1" with the actual details page and ID for Aluno
+            return Url.Action("Details", "Alunoes", new { id = ViewBag.AlunoId });
+        }
+        else
+        {
+            // Adjust this part based on your application's logic when the user is neither docente nor aluno
+            return "#";
+        }
+    }
+}
+
+@if (User.Identity.IsAuthenticated)
+{
+    <span>Welcome, <a href="@GetProfileUrl()" class="text-dark"><strong>@ViewBag.CurrentUserName</strong></a></span>
+
+    @if (ViewBag.DocenteId != null || ViewBag.AlunoId != null)
+    {
+        <span>
+            ,
+            @if (ViewBag.DocenteId != null)
+            {
+                <span>Docente</span>
+            }
+            else if (ViewBag.AlunoId != null)
+            {
+                <span>Aluno</span>
+            }
+        </span>
+
+        <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
+            <button type="submit" class="btn btn-outline-dark">Logout</button>
+        </form>
+    }
+}
+else
+{
+    <a asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Url.Page("/", new { area = "" })" class="btn btn-outline-dark">Login</a>
+}

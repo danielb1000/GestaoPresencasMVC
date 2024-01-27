@@ -1,22 +1,25 @@
+using GestaoPresencasMVC.Areas.Identity.Data;
 using GestaoPresencasMVC.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using System.Diagnostics;
 
 namespace GestaoPresencasMVC.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(UserManager<gpUser> userManager) : base(userManager)
         {
-            _logger = logger;
         }
 
         public IActionResult Index()
         {
+            // Your existing action logic
             return View();
         }
+
+
 
         public IActionResult Privacy()
         {
