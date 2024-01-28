@@ -48,10 +48,17 @@ namespace GestaoPresencasMVC.Controllers
                 return NotFound();
             }
 
-            var aula = await _context.Aulas
-                .Include(a => a.IdAnoNavigation)
-                .Include(a => a.IdUcNavigation)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            // Make a request to the API to get details for the specified Aula Id
+            var apiClient = _httpClientFactory.CreateClient();
+            var response = await apiClient.GetStringAsync($"http://localhost:5031/api/aulas/{id}");
+
+            if (string.IsNullOrEmpty(response))
+            {
+                return NotFound();
+            }
+
+            // Deserialize the response to an Aula object
+            var aula = JsonConvert.DeserializeObject<Aula>(response);
 
             if (aula == null)
             {
@@ -61,6 +68,7 @@ namespace GestaoPresencasMVC.Controllers
             // Pass the Aula Id to the PresencasController
             return RedirectToAction("Index", "Presencas", new { aulaId = aula.Id });
         }
+
 
 
         // GET: Aulas/Create
