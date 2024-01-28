@@ -30,6 +30,10 @@ builder.Services.Configure<IdentityOptions>(options =>
 });
 
 
+builder.Services.AddControllers();
+
+builder.Services.AddHttpClient();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -45,11 +49,20 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+// Authentication and Authorization
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+    // ... other endpoints if needed
+});
+
 app.MapRazorPages();
 
 app.Run();

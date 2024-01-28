@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using GestaoPresencasMVC.Models;
 using GestaoPresencasMVC.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GestaoPresencasMVC.Controllers
 {
@@ -21,6 +22,7 @@ namespace GestaoPresencasMVC.Controllers
             _context = context;
         }
 
+        [Authorize]
         // GET: Docentes
         public async Task<IActionResult> Index()
         {

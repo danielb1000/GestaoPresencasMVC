@@ -8,24 +8,55 @@ using Microsoft.EntityFrameworkCore;
 using GestaoPresencasMVC.Models;
 using GestaoPresencasMVC.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity;
+using System.Net.Http;
+using System.Net.Http.Json;
+using GestaoPresencasMVC.Controllers.Api;
 
 namespace GestaoPresencasMVC.Controllers
 {
     public class AlunoesController : BaseController
     {
         private readonly TentativaDb4Context _context;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public AlunoesController(TentativaDb4Context context, UserManager<gpUser> userManager)
+        public AlunoesController(TentativaDb4Context context, UserManager<gpUser> userManager, IHttpClientFactory httpClientFactory)
              : base(userManager)
         {
             _context = context;
+            _httpClientFactory = httpClientFactory;
         }
+
+        // GET: Alunoes
+        //public async Task<IActionResult> Index()
+        //{
+        //    return View(await _context.Alunos.ToListAsync());
+        //}
+
 
         // GET: Alunoes
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Alunos.ToListAsync());
+            // Create an HttpClient instance using the factory
+            var client = _httpClientFactory.CreateClient();
+
+            // Make a request to your API controller
+            var response = await client.GetAsync("http://localhost:5031/api/alunoes");
+
+            if (response.IsSuccessStatusCode)
+            {
+                // Deserialize the response content to get the list of Alunos
+                var alunos = await response.Content.ReadAsAsync<List<Aluno>>();
+
+                return View(alunos);
+            }
+            else
+            {
+                // Handle the error (e.g., log, show an error page)
+                return View("Error");
+            }
         }
+
+
 
         // GET: Alunoes/Details/5
         public async Task<IActionResult> Details(int? id)
