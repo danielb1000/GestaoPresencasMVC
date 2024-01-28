@@ -8,24 +8,32 @@ using Microsoft.EntityFrameworkCore;
 using GestaoPresencasMVC.Models;
 using GestaoPresencasMVC.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace GestaoPresencasMVC.Controllers
 {
     public class AulasController : BaseController
     {
         private readonly TentativaDb4Context _context;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public AulasController(TentativaDb4Context context, UserManager<gpUser> userManager)
+        public AulasController(TentativaDb4Context context, UserManager<gpUser> userManager, IHttpClientFactory httpClientFactory)
              : base(userManager)
         {
             _context = context;
+            _httpClientFactory = httpClientFactory;
         }
 
         // GET: Aulas
         public async Task<IActionResult> Index()
         {
-            var tentativaDb4Context = _context.Aulas.Include(a => a.IdAnoNavigation).Include(a => a.IdUcNavigation);
-            return View(await tentativaDb4Context.ToListAsync());
+            // Call the API to get the list of Aulas
+            var apiClient = _httpClientFactory.CreateClient();
+            var response = await apiClient.GetStringAsync("http://localhost:5031/api/aulas");
+            var aulas = JsonConvert.DeserializeObject<List<Aula>>(response);
+
+            return View(aulas);
         }
 
         // GET: Aulas/Details/5
@@ -62,35 +70,64 @@ namespace GestaoPresencasMVC.Controllers
         // POST: Aulas/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create([Bind("Id,IdUc,IdAno,Data,Sala")] Aula aula)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        _context.Add(aula);
+        //        await _context.SaveChangesAsync();
+
+        //        // Retrieve the list of alunos in the associated UC
+        //        List<int> alunosIds = _context.AlunoUcs
+        //            .Where(au => au.IdUc == aula.IdUc)
+        //            .Select(au => au.IdAluno ?? 0)
+        //            .ToList();
+
+        //        // Create Presenca records for each Aluno
+        //        foreach (int alunoId in alunosIds)
+        //        {
+        //            Presenca presenca = new Presenca
+        //            {
+        //                IdAula = aula.Id,
+        //                IdAluno = alunoId,
+        //                Presente = false // You may set the default value based on your logic
+        //            };
+
+        //            _context.Presencas.Add(presenca);
+        //        }
+
+        //        await _context.SaveChangesAsync();
+
+        //        return RedirectToAction(nameof(Index));
+        //    }
+
+        //    // Handle invalid model state
+        //    ViewData["IdAno"] = new SelectList(_context.Anos, "Id", "Id", aula.IdAno);
+        //    ViewData["IdUc"] = new SelectList(_context.Ucs, "Id", "Id", aula.IdUc);
+        //    return View(aula);
+        //}
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,IdUc,IdAno,Data,Sala")] Aula aula)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(aula);
-                await _context.SaveChangesAsync();
+                // Step 1: Make a POST request to the API to create the Aula
+                var apiClient = _httpClientFactory.CreateClient();
 
-                // Retrieve the list of alunos in the associated UC
-                List<int> alunosIds = _context.AlunoUcs
-                    .Where(au => au.IdUc == aula.IdUc)
-                    .Select(au => au.IdAluno ?? 0)
-                    .ToList();
+                var aulaJson = JsonConvert.SerializeObject(aula);
+                var content = new StringContent(aulaJson, Encoding.UTF8, "application/json");
 
-                // Create Presenca records for each Aluno
-                foreach (int alunoId in alunosIds)
+                var response = await apiClient.PostAsync("http://localhost:5031/api/aulas", content);
+
+                if (!response.IsSuccessStatusCode)
                 {
-                    Presenca presenca = new Presenca
-                    {
-                        IdAula = aula.Id,
-                        IdAluno = alunoId,
-                        Presente = false // You may set the default value based on your logic
-                    };
-
-                    _context.Presencas.Add(presenca);
+                    // Handle the case where the API request fails
+                    // You may want to log the error or return an error view
+                    return View("Error");
                 }
-
-                await _context.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));
             }
@@ -100,6 +137,10 @@ namespace GestaoPresencasMVC.Controllers
             ViewData["IdUc"] = new SelectList(_context.Ucs, "Id", "Id", aula.IdUc);
             return View(aula);
         }
+
+
+
+
 
 
         // GET: Aulas/Edit/5
