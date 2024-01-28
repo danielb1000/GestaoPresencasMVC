@@ -8,17 +8,24 @@ using Microsoft.EntityFrameworkCore;
 using GestaoPresencasMVC.Models;
 using GestaoPresencasMVC.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity;
+using GestaoPresencasMVC.DTOs;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace GestaoPresencasMVC.Controllers
 {
     public class PresencasController : BaseController
     {
         private readonly TentativaDb4Context _context;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public PresencasController(TentativaDb4Context context, UserManager<gpUser> userManager)
+
+        public PresencasController(TentativaDb4Context context, UserManager<gpUser> userManager, IHttpClientFactory httpClientFactory)
              : base(userManager)
         {
             _context = context;
+            _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
+
         }
 
         // GET: Presencas
@@ -208,8 +215,25 @@ namespace GestaoPresencasMVC.Controllers
             {
                 try
                 {
+                    // Update the local database
                     _context.Update(presenca);
                     await _context.SaveChangesAsync();
+
+                    // Make a PUT request to the Presencas API to update the 'Presente' property
+                    var apiClient = _httpClientFactory.CreateClient();
+
+                    var presencaUpdateDto = new PresencaDTO { Presente = presenca.Presente };
+                    var presencaJson = JsonConvert.SerializeObject(presencaUpdateDto);
+                    var content = new StringContent(presencaJson, Encoding.UTF8, "application/json");
+
+                    var response = await apiClient.PutAsync($"http://localhost:5031/api/presencas/{id}", content);
+
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        // Handle the case where the API request fails
+                        // You may want to log the error or return an error view
+                        return View("Error");
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -222,8 +246,10 @@ namespace GestaoPresencasMVC.Controllers
                         throw;
                     }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["IdAluno"] = new SelectList(_context.Alunos, "Id", "Id", presenca.IdAluno);
             ViewData["IdAula"] = new SelectList(_context.Aulas, "Id", "Id", presenca.IdAula);
             return View(presenca);

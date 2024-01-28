@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using GestaoPresencasMVC.Models;
+using GestaoPresencasMVC.DTOs;
 
 namespace GestaoPresencasMVC.Controllers.Api
 {
@@ -32,6 +33,26 @@ namespace GestaoPresencasMVC.Controllers.Api
 
             return aulas;
         }
+
+
+        [HttpGet("GetAulasWithPresencaCount")]
+        public async Task<ActionResult<IEnumerable<AulaWithPresencaCountDTO>>> GetAulasWithPresencaCount()
+        {
+            var aulasWithPresencaCount = await _context.Aulas
+                .Include(a => a.IdAnoNavigation)
+                .Include(a => a.IdUcNavigation)
+                .Select(a => new AulaWithPresencaCountDTO
+                {
+                    Aula = a,
+                    PresenteCount = a.Presencas.Count(p => p.Presente == true),
+                    TotalPresencaCount = a.Presencas.Count
+                })
+                .ToListAsync();
+
+            return aulasWithPresencaCount;
+        }
+
+
 
         // GET: api/Aulas/5
         [HttpGet("{id}")]

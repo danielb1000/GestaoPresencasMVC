@@ -10,6 +10,7 @@ using GestaoPresencasMVC.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
 using System.Text;
+using GestaoPresencasMVC.DTOs;
 
 namespace GestaoPresencasMVC.Controllers
 {
@@ -26,15 +27,18 @@ namespace GestaoPresencasMVC.Controllers
         }
 
         // GET: Aulas
+        // AulasController.cs
         public async Task<IActionResult> Index()
         {
-            // Call the API to get the list of Aulas
+            // Call the API to get the list of Aulas with presenca counts
             var apiClient = _httpClientFactory.CreateClient();
-            var response = await apiClient.GetStringAsync("http://localhost:5031/api/aulas");
-            var aulas = JsonConvert.DeserializeObject<List<Aula>>(response);
+            var response = await apiClient.GetStringAsync("http://localhost:5031/api/aulas/GetAulasWithPresencaCount");
+            var aulasWithPresencaCount = JsonConvert.DeserializeObject<List<AulaWithPresencaCountDTO>>(response);
 
-            return View(aulas);
+            return View(aulasWithPresencaCount); // Pass the correct model to the view
         }
+
+
 
         // GET: Aulas/Details/5
         public async Task<IActionResult> Details(int? id)
