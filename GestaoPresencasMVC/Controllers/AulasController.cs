@@ -143,6 +143,7 @@ namespace GestaoPresencasMVC.Controllers
 
 
 
+
         // GET: Aulas/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {

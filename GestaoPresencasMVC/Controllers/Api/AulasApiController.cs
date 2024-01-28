@@ -94,9 +94,9 @@ namespace GestaoPresencasMVC.Controllers.Api
 
             // Step 3: Create Presenca records for each Aluno
             foreach (int alunoId in alunosIds)
-        {
-                Presenca presenca = new Presenca
             {
+                Presenca presenca = new Presenca
+                {
                     IdAula = aula.Id,
                     IdAluno = alunoId,
                     Presente = false // You may set the default value based on your logic
@@ -105,7 +105,6 @@ namespace GestaoPresencasMVC.Controllers.Api
                 _context.Presencas.Add(presenca);
             }
 
-            _context.Aulas.Remove(aula);
             await _context.SaveChangesAsync();
 
             // Return the created Aula
