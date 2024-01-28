@@ -22,11 +22,103 @@ namespace GestaoPresencasMVC.Controllers
         }
 
         // GET: Presencas
-        public async Task<IActionResult> Index()
+        //public IActionResult Index()
+        //{
+        //    var presencas = _context.Presencas
+        //        .Include(p => p.IdAulaNavigation)
+        //            .ThenInclude(aula => aula.IdUcNavigation)
+        //        .Include(p => p.IdAlunoNavigation)
+        //        .ToList();
+
+        //    return View(presencas);
+        //}
+
+        // POST: Presencas/UpdatePresencas
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> UpdatePresencas(List<Presenca> presencas)
+        //{
+        //    Console.WriteLine("UpdatePresencas Action Reached!");
+
+        //    if (ModelState.IsValid)
+        //    {
+        //        try
+        //        {
+        //            foreach (var presenca in presencas)
+        //            {
+        //                Console.WriteLine($"Presenca Id: {presenca.Id}, Presente: {presenca.Presente}");
+
+        //                var existingPresenca = await _context.Presencas.FindAsync(presenca.Id);
+
+        //                if (existingPresenca != null)
+        //                {
+        //                    existingPresenca.Presente = presenca.Presente;
+        //                    _context.Update(existingPresenca);
+        //                }
+        //            }
+
+        //            await _context.SaveChangesAsync();
+
+        //            Console.WriteLine("Changes Saved!");
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            Console.WriteLine($"Exception: {ex.Message}");
+        //            throw; // Rethrow the exception after logging
+        //        }
+
+
+        //        return RedirectToAction(nameof(Index));
+        //    }
+
+        //    // If the ModelState is not valid, return to the same view with validation errors
+        //    return View(nameof(Index), presencas);
+        //}
+
+
+
+
+
+
+
+
+
+
+
+        public async Task<IActionResult> Index(int? aulaId)
         {
-            var tentativaDb4Context = _context.Presencas.Include(p => p.IdAlunoNavigation).Include(p => p.IdAulaNavigation);
-            return View(await tentativaDb4Context.ToListAsync());
+            // Retrieve all presences or filter by Aula Id if provided
+            IQueryable<Presenca> presencasQuery = _context.Presencas
+                .Include(p => p.IdAlunoNavigation)
+                .Include(p => p.IdAulaNavigation)
+                    .ThenInclude(a => a.IdUcNavigation)
+                .Include(p => p.IdAulaNavigation)
+                    .ThenInclude(a => a.IdAnoNavigation);
+
+            if (aulaId != null)
+            {
+                presencasQuery = presencasQuery.Where(p => p.IdAula == aulaId);
+            }
+
+            var presencas = await presencasQuery.ToListAsync();
+
+            if (presencas == null)
+            {
+                return NotFound();
+            }
+
+            return View(presencas);
         }
+
+
+
+
+
+
+
+
+
 
         // GET: Presencas/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -82,15 +174,23 @@ namespace GestaoPresencasMVC.Controllers
                 return NotFound();
             }
 
-            var presenca = await _context.Presencas.FindAsync(id);
+            var presenca = await _context.Presencas
+                .Include(p => p.IdAulaNavigation)
+                .Include(p => p.IdAlunoNavigation)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
             if (presenca == null)
             {
                 return NotFound();
             }
-            ViewData["IdAluno"] = new SelectList(_context.Alunos, "Id", "Id", presenca.IdAluno);
-            ViewData["IdAula"] = new SelectList(_context.Aulas, "Id", "Id", presenca.IdAula);
+
+            ViewData["IdAluno"] = new SelectList(_context.Alunos, "Id", "Nome", presenca.IdAluno);
+            ViewData["IdAula"] = new SelectList(_context.Aulas, "Id", "Data", presenca.IdAula);
+
             return View(presenca);
         }
+
+
 
         // POST: Presencas/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -169,4 +269,6 @@ namespace GestaoPresencasMVC.Controllers
             return _context.Presencas.Any(e => e.Id == id);
         }
     }
+
+
 }

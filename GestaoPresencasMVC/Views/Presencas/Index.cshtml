@@ -1,4 +1,4 @@
-﻿@model IEnumerable<GestaoPresencasMVC.Models.Presenca>
+﻿@model List<GestaoPresencasMVC.Models.Presenca>
 
 @{
     ViewData["Title"] = "Index";
@@ -9,39 +9,70 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Presente)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdAlunoNavigation)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdAulaNavigation)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Presente)
-            </td>
-            <td>
-                    @Html.DisplayFor(modelItem => item.IdAlunoNavigation.Nome)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdAulaNavigation.Id)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<form method="post" asp-action="UpdatePresencas">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model[0].Presente)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model[0].IdAlunoNavigation.Nome)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model[0].IdAulaNavigation.Data)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model[0].IdAulaNavigation.Sala)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model[0].IdAulaNavigation.IdUcNavigation.Nome)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model[0].IdAulaNavigation.IdAnoNavigation.Numero)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var presenca in Model)
+            {
+                <tr>
+                    <td>
+                        @if (presenca.Presente == true)
+                        {
+                            <text>Sim</text>
+                        }
+                        else
+                        {
+                            <text> </text>
+                        }
+                        <input type="hidden" asp-for="@presenca.Id" />
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => presenca.IdAlunoNavigation.Nome)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => presenca.IdAulaNavigation.Data)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => presenca.IdAulaNavigation.Sala)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => presenca.IdAulaNavigation.IdUcNavigation.Nome)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => presenca.IdAulaNavigation.IdAnoNavigation.Numero)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@presenca.Id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@presenca.Id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@presenca.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @* <button type="submit" class="btn btn-primary">Save Changes</button> *@
+</form>

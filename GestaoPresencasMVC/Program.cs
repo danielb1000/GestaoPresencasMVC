@@ -16,6 +16,7 @@ builder.Services.AddDbContext<gpContext>(options => options.UseSqlServer(builder
 
 builder.Services.AddDefaultIdentity<gpUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<gpContext>();
 
+
 builder.Services.Configure<IdentityOptions>(options =>
 {
     // Disable other password requirements

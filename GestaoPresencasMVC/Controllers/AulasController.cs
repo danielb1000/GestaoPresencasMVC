@@ -40,13 +40,16 @@ namespace GestaoPresencasMVC.Controllers
                 .Include(a => a.IdAnoNavigation)
                 .Include(a => a.IdUcNavigation)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (aula == null)
             {
                 return NotFound();
             }
 
-            return View(aula);
+            // Pass the Aula Id to the PresencasController
+            return RedirectToAction("Index", "Presencas", new { aulaId = aula.Id });
         }
+
 
         // GET: Aulas/Create
         public IActionResult Create()
@@ -67,12 +70,37 @@ namespace GestaoPresencasMVC.Controllers
             {
                 _context.Add(aula);
                 await _context.SaveChangesAsync();
+
+                // Retrieve the list of alunos in the associated UC
+                List<int> alunosIds = _context.AlunoUcs
+                    .Where(au => au.IdUc == aula.IdUc)
+                    .Select(au => au.IdAluno ?? 0)
+                    .ToList();
+
+                // Create Presenca records for each Aluno
+                foreach (int alunoId in alunosIds)
+                {
+                    Presenca presenca = new Presenca
+                    {
+                        IdAula = aula.Id,
+                        IdAluno = alunoId,
+                        Presente = false // You may set the default value based on your logic
+                    };
+
+                    _context.Presencas.Add(presenca);
+                }
+
+                await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
+
+            // Handle invalid model state
             ViewData["IdAno"] = new SelectList(_context.Anos, "Id", "Id", aula.IdAno);
             ViewData["IdUc"] = new SelectList(_context.Ucs, "Id", "Id", aula.IdUc);
             return View(aula);
         }
+
 
         // GET: Aulas/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -154,15 +182,25 @@ namespace GestaoPresencasMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var aula = await _context.Aulas.FindAsync(id);
+            // Find the Aula along with its related Presenca records
+            var aula = await _context.Aulas
+                .Include(a => a.Presencas)
+                .FirstOrDefaultAsync(a => a.Id == id);
+
             if (aula != null)
             {
+                // Remove the related Presenca records
+                _context.Presencas.RemoveRange(aula.Presencas);
+
+                // Remove the Aula
                 _context.Aulas.Remove(aula);
+
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
 
         private bool AulaExists(int id)
         {
