@@ -8,24 +8,31 @@ using Microsoft.EntityFrameworkCore;
 using GestaoPresencasMVC.Models;
 using GestaoPresencasMVC.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity;
+using Newtonsoft.Json;
 
 namespace GestaoPresencasMVC.Controllers
 {
     public class AulasController : BaseController
     {
         private readonly TentativaDb4Context _context;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public AulasController(TentativaDb4Context context, UserManager<gpUser> userManager)
+        public AulasController(TentativaDb4Context context, UserManager<gpUser> userManager, IHttpClientFactory httpClientFactory)
              : base(userManager)
         {
             _context = context;
+            _httpClientFactory = httpClientFactory;
         }
 
         // GET: Aulas
         public async Task<IActionResult> Index()
         {
-            var tentativaDb4Context = _context.Aulas.Include(a => a.IdAnoNavigation).Include(a => a.IdUcNavigation);
-            return View(await tentativaDb4Context.ToListAsync());
+            // Call the API to get the list of Aulas
+            var apiClient = _httpClientFactory.CreateClient();
+            var response = await apiClient.GetStringAsync("http://localhost:5031/api/aulas");
+            var aulas = JsonConvert.DeserializeObject<List<Aula>>(response);
+
+            return View(aulas);
         }
 
         // GET: Aulas/Details/5
