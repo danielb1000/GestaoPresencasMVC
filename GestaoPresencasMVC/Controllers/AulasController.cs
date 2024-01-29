@@ -18,12 +18,14 @@ namespace GestaoPresencasMVC.Controllers
     {
         private readonly TentativaDb4Context _context;
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly UserManager<gpUser> _userManager;
 
         public AulasController(TentativaDb4Context context, UserManager<gpUser> userManager, IHttpClientFactory httpClientFactory)
              : base(userManager)
         {
             _context = context;
             _httpClientFactory = httpClientFactory;
+            _userManager = userManager;
         }
 
         // GET: Aulas
@@ -70,14 +72,42 @@ namespace GestaoPresencasMVC.Controllers
         }
 
 
-
         // GET: Aulas/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            // Get the logged-in user
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                // Handle the case where the user is not authenticated
+                return RedirectToAction("Login", "Account");
+            }
+
+            // Assuming DocenteId is an integer, adjust the type accordingly
+            int? docenteId = user.DocenteId;
+
+            if (docenteId == null)
+            {
+                // Handle the case where the logged-in user is not a Docente
+                return RedirectToAction("AccessDenied", "Account");
+            }
+
+            // Get the Ucs associated with the DocenteId
+            var ucsForDocente = await _context.Ucs
+                .Where(u => u.IdDocente == docenteId)
+                .ToListAsync();
+
+            // Create a SelectList for the filtered Ucs
+            ViewData["IdUc"] = new SelectList(ucsForDocente, "Id", "Nome");
+
+            // Other code to retrieve Anos as before
             ViewData["IdAno"] = new SelectList(_context.Anos, "Id", "Numero");
-            ViewData["IdUc"] = new SelectList(_context.Ucs, "Id", "Nome");
+
             return View();
         }
+
+
 
         // POST: Aulas/Create
         [HttpPost]

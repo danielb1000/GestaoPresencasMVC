@@ -246,8 +246,11 @@ namespace GestaoPresencasMVC.Controllers
                         throw;
                     }
                 }
+                // Redirect to the Presencas action with aulaId parameter
+                var redirectUrl = $"/Presencas?aulaId={presenca.IdAula}";
+                return Redirect(redirectUrl);
 
-                return RedirectToAction(nameof(Index));
+
             }
 
             ViewData["IdAluno"] = new SelectList(_context.Alunos, "Id", "Id", presenca.IdAluno);
