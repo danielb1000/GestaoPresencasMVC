@@ -58,8 +58,12 @@
                         <a asp-action="Edit" asp-route-id="@item.Aula.Id">Edit  </a>
                         <a>|</a>
                     }
-                <a asp-action="Details" asp-route-id="@item.Aula.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Aula.Id">Delete</a>
+                <a asp-action="Details" asp-route-id="@item.Aula.Id">Details</a> 
+                    @if (ViewBag.DocenteId == item.Aula.IdUcNavigation.IdDocente)
+                    {
+                        <a>|</a>
+                        <a asp-action="Edit" asp-route-id="@item.Aula.Id">Edit  </a>
+                    }
             </td>
         </tr>
 }

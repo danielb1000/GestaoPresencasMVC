@@ -23,11 +23,13 @@ public class BaseController : Controller
         {
             ViewBag.CurrentUserName = user.UserName;
             ViewBag.DocenteId = user.DocenteId;
+            ViewBag.AlunoId = user.AlunoId;
         }
         else
         {
-            ViewBag.CurrentUserName = "Aluno";
+            //ViewBag.CurrentUserName = "Aluno";
             ViewBag.DocenteId = null;
+            ViewBag.AlunoId = null;
         }
 
         await base.OnActionExecutionAsync(context, next);
