@@ -34,8 +34,16 @@ builder.Services.AddControllers().AddJsonOptions(options => {
     options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
 });
 
+//builder.Services.AddAuthentication("YourAuthenticationScheme")
+//    .AddCookie("YourAuthenticationScheme", options =>
+//    {
+//        // Cookie options
+//    });
 
 builder.Services.AddHttpClient();
+
+//builder.Services.AddScoped<SecurityStampValidator<gpUser>, CustomSecurityStampValidator>();
+
 
 var app = builder.Build();
 
@@ -59,6 +67,7 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
 
 app.UseEndpoints(endpoints =>
 {

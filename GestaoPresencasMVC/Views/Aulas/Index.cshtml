@@ -52,7 +52,12 @@
                     @string.Format("{0}/{1}", item.PresenteCount, item.TotalPresencaCount)
                 </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Aula.Id">Edit</a> |
+
+                    @if (ViewBag.DocenteId == item.Aula.IdUcNavigation.IdDocente)
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.Aula.Id">Edit  </a>
+                        <a>|</a>
+                    }
                 <a asp-action="Details" asp-route-id="@item.Aula.Id">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.Aula.Id">Delete</a>
             </td>

@@ -65,9 +65,15 @@
                         @Html.DisplayFor(modelItem => presenca.IdAulaNavigation.IdAnoNavigation.Numero)
                     </td>
                     <td>
-                        <a asp-action="Edit" asp-route-id="@presenca.Id">Edit</a> |
+
+
+                        @if (ViewBag.AlunoId == presenca.IdAluno || ViewBag.DocenteId == presenca.IdAulaNavigation.IdUcNavigation.IdDocente)
+                        {
+                            <a asp-action="Edit" asp-route-id="@presenca.Id">Edit  </a>
+                        }
+@*                         <a asp-action="Edit" asp-route-id="@presenca.Id">Edit</a> | *@
                         @* <a asp-action="Details" asp-route-id="@presenca.Id">Details</a> | *@
-                        <a asp-action="Delete" asp-route-id="@presenca.Id">Delete</a>
+                        @* <a asp-action="Delete" asp-route-id="@presenca.Id">Delete</a> *@
                     </td>
                 </tr>
             }
