@@ -80,46 +80,6 @@ namespace GestaoPresencasMVC.Controllers
         }
 
         // POST: Aulas/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("Id,IdUc,IdAno,Data,Sala")] Aula aula)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.Add(aula);
-        //        await _context.SaveChangesAsync();
-
-        //        // Retrieve the list of alunos in the associated UC
-        //        List<int> alunosIds = _context.AlunoUcs
-        //            .Where(au => au.IdUc == aula.IdUc)
-        //            .Select(au => au.IdAluno ?? 0)
-        //            .ToList();
-
-        //        // Create Presenca records for each Aluno
-        //        foreach (int alunoId in alunosIds)
-        //        {
-        //            Presenca presenca = new Presenca
-        //            {
-        //                IdAula = aula.Id,
-        //                IdAluno = alunoId,
-        //                Presente = false // You may set the default value based on your logic
-        //            };
-
-        //            _context.Presencas.Add(presenca);
-        //        }
-
-        //        await _context.SaveChangesAsync();
-
-        //        return RedirectToAction(nameof(Index));
-        //    }
-
-        //    // Handle invalid model state
-        //    ViewData["IdAno"] = new SelectList(_context.Anos, "Id", "Id", aula.IdAno);
-        //    ViewData["IdUc"] = new SelectList(_context.Ucs, "Id", "Id", aula.IdUc);
-        //    return View(aula);
-        //}
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,IdUc,IdAno,Data,Sala")] Aula aula)
@@ -145,8 +105,8 @@ namespace GestaoPresencasMVC.Controllers
             }
 
             // Handle invalid model state
-            ViewData["IdAno"] = new SelectList(_context.Anos, "Id", "Id", aula.IdAno);
-            ViewData["IdUc"] = new SelectList(_context.Ucs, "Id", "Id", aula.IdUc);
+            //ViewData["IdAno"] = new SelectList(_context.Anos, "Id", "Id", aula.IdAno);
+            //ViewData["IdUc"] = new SelectList(_context.Ucs, "Id", "Id", aula.IdUc);
             return View(aula);
         }
 
