@@ -244,7 +244,7 @@ namespace GestaoPresencasMVC.Controllers
 
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return RedirectToAction(nameof(Index));
         }
 
 

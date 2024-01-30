@@ -121,7 +121,7 @@ namespace GestaoPresencasMVC.Controllers.Api
                 {
                     IdAula = aula.Id,
                     IdAluno = alunoId,
-                    Presente = false // You may set the default value based on your logic
+                    Presente = false // default value
                 };
 
                 _context.Presencas.Add(presenca);

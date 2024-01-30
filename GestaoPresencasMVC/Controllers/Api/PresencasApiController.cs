@@ -43,7 +43,7 @@ namespace GestaoPresencasMVC.Controllers.Api
             return presenca;
         }
 
-        // PUT: api/PresencasApi/5
+        // PUT: api/Presencas/5
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdatePresenca(int id, [FromBody] PresencaDTO presencaUpdateDto)
         {
