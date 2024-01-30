@@ -8,12 +8,8 @@ public partial class AlunoUc
 {
     public int Id { get; set; }
 
-    //[Display(Name = "Nome da UC")]
-    //[DataType(DataType.Text)]
     public int? IdUc { get; set; }
 
-    //[Display(Name = "Nome do Aluno")]
-    //[DataType(DataType.Text)]
     public int? IdAluno { get; set; }
 
     [Display(Name = "Nome do Aluno")]

@@ -75,33 +75,30 @@ namespace GestaoPresencasMVC.Controllers
         // GET: Aulas/Create
         public async Task<IActionResult> Create()
         {
-            // Get the logged-in user
+            // the logged-in user
             var user = await _userManager.GetUserAsync(User);
 
             if (user == null)
             {
-                // Handle the case where the user is not authenticated
-                return RedirectToAction("Login", "Account");
+                // se nao estiver autenticado
+                return Redirect($"/Identity/Account/Login");
             }
-
-            // Assuming DocenteId is an integer, adjust the type accordingly
+        
             int? docenteId = user.DocenteId;
 
             if (docenteId == null)
             {
-                // Handle the case where the logged-in user is not a Docente
-                return RedirectToAction("AccessDenied", "Account");
+                // se nao for docente
+                return Redirect($"/Identity/Account/Login");
             }
 
-            // Get the Ucs associated with the DocenteId
+            // Ucs do docente
             var ucsForDocente = await _context.Ucs
                 .Where(u => u.IdDocente == docenteId)
                 .ToListAsync();
 
-            // Create a SelectList for the filtered Ucs
+            // SelectList para as UCs do docente
             ViewData["IdUc"] = new SelectList(ucsForDocente, "Id", "Nome");
-
-            // Other code to retrieve Anos as before
             ViewData["IdAno"] = new SelectList(_context.Anos, "Id", "Numero");
 
             return View();

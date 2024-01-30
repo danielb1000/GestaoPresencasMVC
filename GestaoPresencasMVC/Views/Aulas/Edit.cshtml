@@ -15,12 +15,12 @@
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label asp-for="IdUc" class="control-label"></label>
-                <select asp-for="IdUc" class="form-control" asp-items="ViewBag.IdUc"></select>
+                <select asp-for="IdUc" class="form-control" asp-items="ViewBag.IdUc">UC</select>
                 <span asp-validation-for="IdUc" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="IdAno" class="control-label"></label>
-                <select asp-for="IdAno" class="form-control" asp-items="ViewBag.IdAno"></select>
+                <select asp-for="IdAno" class="form-control" asp-items="ViewBag.IdAno">Ano Letivo</select>
                 <span asp-validation-for="IdAno" class="text-danger"></span>
             </div>
             <div class="form-group">

@@ -14,7 +14,10 @@ public partial class Aula
 
     public DateOnly? Data { get; set; }
 
-    public string? Sala { get; set; }
+    [Required(ErrorMessage = "Sala obrigatoria")]
+    [RegularExpression("^[a-zA-Z0-9]*$", ErrorMessage = "Escolha uma sala valida")]
+    public string Sala { get; set; }
+
 
     [Display(Name = "Ano Letivo")]
     [DataType(DataType.Text)]
