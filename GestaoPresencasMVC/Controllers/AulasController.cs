@@ -110,31 +110,36 @@ namespace GestaoPresencasMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,IdUc,IdAno,Data,Sala")] Aula aula)
         {
+            // Passo 1: Verifica se o estado do modelo é válido
             if (ModelState.IsValid)
             {
-                // Step 1: Make a POST request to the API to create the Aula
+                // Passo 2: Faz uma solicitação POST para a API para criar a Aula
                 var apiClient = _httpClientFactory.CreateClient();
 
+                // Serializa o objeto Aula para JSON
                 var aulaJson = JsonConvert.SerializeObject(aula);
+
+                // Cria o conteúdo para a solicitação HTTP
                 var content = new StringContent(aulaJson, Encoding.UTF8, "application/json");
 
+                // Envia uma solicitação POST para a API de Aulas
                 var response = await apiClient.PostAsync("http://localhost:5031/api/aulas", content);
 
+                // Verifica se a solicitação à API foi bem-sucedida
                 if (!response.IsSuccessStatusCode)
                 {
-                    // Handle the case where the API request fails
-                    // You may want to log the error or return an error view
-                    return View("Error");
+                    return View("Error"); // Retorna uma view/vista de erro se a solicitação à API falhar
                 }
 
+                // Redireciona para a ação Index após a criação bem-sucedida
                 return RedirectToAction(nameof(Index));
             }
 
-            // Handle invalid model state
-            //ViewData["IdAno"] = new SelectList(_context.Anos, "Id", "Id", aula.IdAno);
-            //ViewData["IdUc"] = new SelectList(_context.Ucs, "Id", "Id", aula.IdUc);
+            // Passo 3: Retorna a View com o objeto Aula se o estado do modelo não for válido
             return View(aula);
         }
+
+
 
 
 

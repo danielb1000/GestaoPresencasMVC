@@ -15,7 +15,6 @@ namespace GestaoPresencasMVC.Controllers
 
         public IActionResult Index()
         {
-            // Your existing action logic
             return View();
         }
 

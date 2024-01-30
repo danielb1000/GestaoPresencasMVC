@@ -31,7 +31,7 @@ namespace GestaoPresencasMVC.Controllers
 
         public async Task<IActionResult> Index(int? aulaId)
         {
-            // Retrieve all presences or filter by Aula Id if provided
+            // Recebe todas a presencas e filtra por id se for o caso
             IQueryable<Presenca> presencasQuery = _context.Presencas
                 .Include(p => p.IdAlunoNavigation)
                 .Include(p => p.IdAulaNavigation)
@@ -142,49 +142,60 @@ namespace GestaoPresencasMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,IdAula,IdAluno,Presente")] Presenca presenca)
         {
+            // 1. Verifica se o ID na URL corresponde ao ID da presença
             if (id != presenca.Id)
             {
-                return NotFound();
+                return NotFound(); // Retorna NotFound se não houver correspondência
             }
 
+            // 2. Verifica se o modelo é válido
             if (ModelState.IsValid)
             {
                 try
                 {
-                    // Make a PUT request to the Presencas API to update the 'Presente' property
+                    // 3. Actualização via API
                     var apiClient = _httpClientFactory.CreateClient();
 
+                    // Cria um DTO para atualizar apenas a propriedade 'Presente'
                     var presencaUpdateDto = new PresencaDTO { Presente = presenca.Presente };
                     var presencaJson = JsonConvert.SerializeObject(presencaUpdateDto);
                     var content = new StringContent(presencaJson, Encoding.UTF8, "application/json");
 
+                    // Faz uma requisição PUT para a API de Presenças
                     var response = await apiClient.PutAsync($"http://localhost:5031/api/presencas/{id}", content);
 
+                    // Trata o caso em que a API request falha
                     if (!response.IsSuccessStatusCode)
                     {
-                        // Handle the case where the API request fails
                         return View("Error");
                     }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
+                    // Trata exceções de concorrência
                     if (!PresencaExists(presenca.Id))
                     {
-                        return NotFound();
+                        return NotFound(); // Retorna NotFound se a presença não existe
                     }
                     else
                     {
                         throw;
                     }
                 }
-                // Redirect to the Presencas action with aulaId parameter
+
+                // 4. Redireciona para a página de Presenças com um parâmetro de identificador de aula
                 var redirectUrl = $"/Presencas?aulaId={presenca.IdAula}";
                 return Redirect(redirectUrl);
             }
+
+            // 5. Fornece dados para as listas suspensas na View
             ViewData["IdAluno"] = new SelectList(_context.Alunos, "Id", "Id", presenca.IdAluno);
             ViewData["IdAula"] = new SelectList(_context.Aulas, "Id", "Id", presenca.IdAula);
+
+            // 6. Retorna a View com a presença (para correção se houver erros no modelo)
             return View(presenca);
         }
+
 
         // GET: Presencas/Delete/5
         public async Task<IActionResult> Delete(int? id)
