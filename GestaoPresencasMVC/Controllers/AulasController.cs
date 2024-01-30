@@ -224,25 +224,27 @@ namespace GestaoPresencasMVC.Controllers
         // POST: Aulas/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteAula(int id)
         {
             // Find the Aula along with its related Presenca records
             var aula = await _context.Aulas
                 .Include(a => a.Presencas)
                 .FirstOrDefaultAsync(a => a.Id == id);
 
-            if (aula != null)
+            if (aula == null)
             {
-                // Remove the related Presenca records
-                _context.Presencas.RemoveRange(aula.Presencas);
-
-                // Remove the Aula
-                _context.Aulas.Remove(aula);
-
-                await _context.SaveChangesAsync();
+                return NotFound();
             }
 
-            return RedirectToAction(nameof(Index));
+            // Remove the related Presenca records
+            _context.Presencas.RemoveRange(aula.Presencas);
+
+            // Remove the Aula
+            _context.Aulas.Remove(aula);
+
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
 
 

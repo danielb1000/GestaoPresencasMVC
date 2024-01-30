@@ -103,6 +103,11 @@ public partial class TentativaDb4Context : DbContext
             entity.HasOne(d => d.IdUcNavigation).WithMany(p => p.Aulas)
                 .HasForeignKey(d => d.IdUc)
                 .HasConstraintName("FK__Aula__id_uc__36B12243");
+
+            entity.HasMany(a => a.Presencas)
+                .WithOne(p => p.IdAulaNavigation)
+                .HasForeignKey(p => p.IdAula)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<Curso>(entity =>

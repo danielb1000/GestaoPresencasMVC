@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using GestaoPresencasMVC.Models;
 using GestaoPresencasMVC.DTOs;
+using GestaoPresencasMVC.Data;
 
 namespace GestaoPresencasMVC.Controllers.Api
 {
@@ -135,15 +136,16 @@ namespace GestaoPresencasMVC.Controllers.Api
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAula(int id)
         {
-            var aula = await _context.Aulas.FindAsync(id);
+            var aula =  _context.Aulas.Include(a => a.Presencas).SingleOrDefault(a => a.Id == id);
+
 
             if (aula == null)
             {
                 return NotFound();
             }
 
-            // Remove the related Presenca records
-            _context.Presencas.RemoveRange(aula.Presencas);
+            //// Remove the related Presenca records
+            //_context.Presencas.RemoveRange(aula.Presencas);
 
             // Remove the Aula
             _context.Aulas.Remove(aula);
