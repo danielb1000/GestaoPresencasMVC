@@ -132,6 +132,26 @@ namespace GestaoPresencasMVC.Controllers.Api
             return CreatedAtAction(nameof(GetAula), new { id = aula.Id }, aula);
         }
 
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAula(int id)
+        {
+            var aula = await _context.Aulas.FindAsync(id);
+
+            if (aula == null)
+            {
+                return NotFound();
+            }
+
+            // Remove the related Presenca records
+            _context.Presencas.RemoveRange(aula.Presencas);
+
+            // Remove the Aula
+            _context.Aulas.Remove(aula);
+
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
 
         private bool AulaExists(int id)
         {
