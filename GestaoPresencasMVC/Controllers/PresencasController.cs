@@ -151,10 +151,6 @@ namespace GestaoPresencasMVC.Controllers
             {
                 try
                 {
-                    // Update the local database
-                    _context.Update(presenca);
-                    await _context.SaveChangesAsync();
-
                     // Make a PUT request to the Presencas API to update the 'Presente' property
                     var apiClient = _httpClientFactory.CreateClient();
 
@@ -167,7 +163,6 @@ namespace GestaoPresencasMVC.Controllers
                     if (!response.IsSuccessStatusCode)
                     {
                         // Handle the case where the API request fails
-                        // You may want to log the error or return an error view
                         return View("Error");
                     }
                 }
@@ -185,10 +180,7 @@ namespace GestaoPresencasMVC.Controllers
                 // Redirect to the Presencas action with aulaId parameter
                 var redirectUrl = $"/Presencas?aulaId={presenca.IdAula}";
                 return Redirect(redirectUrl);
-
-
             }
-
             ViewData["IdAluno"] = new SelectList(_context.Alunos, "Id", "Id", presenca.IdAluno);
             ViewData["IdAula"] = new SelectList(_context.Aulas, "Id", "Id", presenca.IdAula);
             return View(presenca);

@@ -29,7 +29,6 @@ namespace GestaoPresencasMVC.Controllers
         }
 
         // GET: Aulas
-        // AulasController.cs
         public async Task<IActionResult> Index()
         {
             // Call the API to get the list of Aulas with presenca counts
